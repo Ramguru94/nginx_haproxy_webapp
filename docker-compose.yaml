@@ -1,0 +1,42 @@
+version: "3"
+services:
+  haproxy:
+    image: haproxy_v1
+    container_name: haproxy
+    build:
+      context: ./ha
+    depends_on:
+      - webapp1
+      - webapp2
+    ports:
+      - "81:80"
+    links:
+      - webapp1
+      - webapp2
+
+  webapp1:
+    image: web1_v1
+    container_name: web_app1
+    build:
+      context: ./web-server-1
+    ports:
+      - "8080:80"
+
+  webapp2:
+    image: web2_v1
+    container_name: web_app2
+    build:
+      context: ./web-server-2
+    ports:
+      - "8081:80"
+
+  nginx:
+    image: nginx_v1
+    container_name: nginx
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    links:
+      - haproxy
+
